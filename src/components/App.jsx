@@ -1,86 +1,54 @@
 import { Component } from 'react';
-import { nanoid } from 'nanoid';
-import { Filter } from './Filter/Filter';
-import { ContactForm } from './ContactForm/ContactForm';
-import { ContactList } from './ContactList/ContactList';
-import css from '../components/App.module.css';
-const LOCAL_KEY = 'contacts'
+import { Button } from './Button/Button';
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import { SearchBar } from './Searchbar/Searchbar';
+import axios from 'axios';
+// import { getImages } from './services/images.service';
+const BASE_URL = 'https://pixabay.com/api/';
+const key = '31736182-1e49e5184d5967b35aa45da96';
+
 export class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
+    images: [],
+    query: '',
+    page: 1,
   };
-
-  componentDidMount(){
-    const localContacts = localStorage.getItem(LOCAL_KEY);
-    const parsedContacts = JSON.parse(localContacts);
-    if (parsedContacts) {
-      this.setState({contacts: parsedContacts})
+  async componentDidUpdate(_, prevState) {
+    const { query, page } = this.state;
+    console.log(query);
+    // if (prevState.query !== this.state.query){
+    //   const images = await getImages(query, page);
+    //   console.log(images);
+    //   this.setState({images})
+    // }
+    if (prevState.query !== query) {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}?q=${query}&page=${page}&key=${key}&image_type='photo'&orientation='horizontal'&per_page=12`
+        );
+        console.log(response.data);
+        this.setState({ images: response.data.hits });
+      } catch (error) {
+        console.log(error.message);
+      }
     }
   }
 
-  componentDidUpdate(_, prevState){
-    if (prevState.contacts!== this.state.contacts) {
-      localStorage.setItem(LOCAL_KEY, JSON.stringify(this.state.contacts))
-    }
-  }
+  // searchImg() {
 
-  handleAddContact =  contact => {
-    const sameContact = this.state.contacts
-    .find(el => el.name === contact.name);
-    if (sameContact) {
-      alert(`${ contact.name} is already in contacts`);
-    } else {
-      const newContact = {...contact, id: nanoid()};
-      this.setState((prevState) => ({
-        contacts: [...prevState.contacts, newContact],
-      }));
-    }
+  // }
 
-      
-    
-  };
-
-  changeFilter = e => {
-    const { value } = e.currentTarget;
-    this.setState({ filter: value.toLowerCase() });
-  };
-
-  getFilteredContacts = () => {
-    const { contacts, filter } = this.state;
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter)
-    );
-  };
-
-  removeContact = contactId => {
-    this.setState(prev => {
-      return {
-        contacts: prev.contacts.filter(({ id }) => id !== contactId),
-      };
-    });
+  handleQuerySubmit = query => {
+    this.setState({ query, page: 1 });
   };
 
   render() {
-    const { filter } = this.state;
-    const filteredContacts = this.getFilteredContacts();
-
+    const { images } = this.state;
     return (
       <div>
-        <h1 className={css.title}>Phonebook</h1>
-        <ContactForm handleAddContact={this.handleAddContact} />
-
-        <h2 className={css.subTitle}>Contacts</h2>
-        <Filter value={filter} onChangeFilter={this.changeFilter} />
-        <ContactList
-          contacts={filteredContacts}
-          onRemoveContact={this.removeContact}
-        />
+        <SearchBar onSubmit={this.handleQuerySubmit} />
+        <ImageGallery images={images} />
+        <Button />
       </div>
     );
   }
