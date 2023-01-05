@@ -1,12 +1,14 @@
 import { Component } from 'react';
+import css from './Searchbar.module.css';
 export class SearchBar extends Component {
   state = {
     query: '',
+    
   }
 
   handleChange = e => {
     const {value} = e.target;
-    console.log(e.target.value);
+    // console.log(e.target.value);
     this.setState({query: value})
   }
 
@@ -16,15 +18,15 @@ export class SearchBar extends Component {
   }
   render() {
     return (
-      <header className="searchbar">
-        <form className="form" onSubmit={this.handleSubmit}>
-          <button type="submit" className="button">
-            <span className="button-label">Search</span>
+      <header className={css.searchBar}>
+        <form className={css.searchForm} onSubmit={this.handleSubmit}>
+          <button type="submit" className={css.searchFormButton} >
+            <span className={css.searchFormButtonLabel}>Search</span>
           </button>
 
           <input
             onChange={this.handleChange}
-            className="input"
+            className={css.searchFormInput}
             type="text"
             value={this.state.query}
             autoComplete="off"
