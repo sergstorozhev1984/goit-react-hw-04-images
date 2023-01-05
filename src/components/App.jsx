@@ -2,12 +2,12 @@ import { Component } from 'react';
 import { Button } from './Button/Button';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { SearchBar } from './Searchbar/Searchbar';
-import axios from 'axios';
+// import axios from 'axios';
 import { getImages } from './services/images.service';
 
 import css from '../components/App.module.css'
-const BASE_URL = 'https://pixabay.com/api/';
-const key = '31736182-1e49e5184d5967b35aa45da96';
+// const BASE_URL = 'https://pixabay.com/api/';
+// const key = '31736182-1e49e5184d5967b35aa45da96';
 
 export class App extends Component {
   state = {
