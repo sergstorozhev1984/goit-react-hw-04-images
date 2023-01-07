@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { toast } from 'react-toastify';
 import css from './Searchbar.module.css';
 export class SearchBar extends Component {
   state = {
@@ -8,13 +9,18 @@ export class SearchBar extends Component {
 
   handleChange = e => {
     const {value} = e.target;
-    // console.log(e.target.value);
-    this.setState({query: value})
+    this.setState({query: value.toLowerCase()})
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state.query);
+    const { query } = this.state;
+    const { onSubmit } = this.props;
+    if (query.trim() === '') {
+      toast.error('Please enter a search value');
+      return;
+    }
+    onSubmit(query);
   }
   render() {
     return (
