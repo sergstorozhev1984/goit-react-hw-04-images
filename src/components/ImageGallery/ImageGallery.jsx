@@ -1,13 +1,21 @@
-import { ImageGalleryItem } from "components/ImageGalleryItem/ImageGalleryItem";
+import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import css from './ImageGallery.module.css';
 
-export const ImageGallery = ({images}) => {
+export const ImageGallery = ({ images, onClick }) => {
   return (
     <ul className={css.imageGallery}>
-      {images.map(({id, webformatURL, largeImageURL, tags}) => (
-        <ImageGalleryItem key={id} id={id} webformatURL={webformatURL} tags={tags} largeImageURL={largeImageURL} />
-      ))}
+      {images.map(({ id, webformatURL, largeImageURL, tags }) => {
+        // console.log(largeImageURL);
+        return (<ImageGalleryItem
+          key={id}
+          webformatURL={webformatURL}
+          tags={tags}
+          largeImageURL={largeImageURL}
+          onClick={onClick}
+        />)
+      }
         
+      )}
     </ul>
-  )
+  );
 };

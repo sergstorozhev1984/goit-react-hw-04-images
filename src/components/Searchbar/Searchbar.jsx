@@ -1,10 +1,10 @@
 import { Component } from 'react';
 import { toast } from 'react-toastify';
 import css from './Searchbar.module.css';
+
 export class SearchBar extends Component {
   state = {
     query: '',
-    
   }
 
   handleChange = e => {
@@ -21,7 +21,9 @@ export class SearchBar extends Component {
       return;
     }
     onSubmit(query);
+    this.setState({ query: "" });
   }
+  
   render() {
     return (
       <header className={css.searchBar}>

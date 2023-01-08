@@ -14,21 +14,22 @@ export class Modal extends Component {
     window.removeEventListener('keydown', this.closeByEsc);
   }
 
-  closeByEsc = e => {
-    if (e.code !== 'Escape') {
-      return;
+  closeByEsc = (e) => {
+    if (e.code === 'Escape') {
+      this.props.onClose();
     }
-    this.props.closeModal();
   };
 
-  render() {
-    const { closeModal, tags, modalImg } = this.props;
+  closeByOverlay = (e) => {
+    if (e.currentTarget === e.target) {
+      this.props.onClose();
+    }
+  }
 
+  render() {
     return createPortal(
-      <div className={css.overlay} onClick={closeModal}>
-        <div className={css.modal}>
-          <img className={css.modalImg} src={modalImg} alt={tags} />
-        </div>
+      <div className={css.overlay} onClick={this.closeByOverlay}>
+        <div className={css.modal}>{this.props.children}</div>
       </div>,
       modalRoot
     );
@@ -36,7 +37,5 @@ export class Modal extends Component {
 }
 
 Modal.propTypes = {
-  modalImg: PropTypes.string.isRequired,
-  closeModal: PropTypes.func.isRequired,
-  tags: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
