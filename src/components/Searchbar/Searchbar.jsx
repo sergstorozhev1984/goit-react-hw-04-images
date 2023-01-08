@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { toast } from 'react-toastify';
 import css from './Searchbar.module.css';
@@ -21,7 +22,7 @@ export class SearchBar extends Component {
       return;
     }
     onSubmit(query);
-    this.setState({ query: "" });
+    this.setState({ query: '' });
   }
   
   render() {
@@ -45,4 +46,8 @@ export class SearchBar extends Component {
       </header>
     );
   }
+}
+
+SearchBar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
 }
