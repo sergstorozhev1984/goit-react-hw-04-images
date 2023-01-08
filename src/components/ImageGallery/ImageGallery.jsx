@@ -5,17 +5,16 @@ export const ImageGallery = ({ images, onClick }) => {
   return (
     <ul className={css.imageGallery}>
       {images.map(({ id, webformatURL, largeImageURL, tags }) => {
-        // console.log(largeImageURL);
-        return (<ImageGalleryItem
-          key={id}
-          webformatURL={webformatURL}
-          tags={tags}
-          largeImageURL={largeImageURL}
-          onClick={onClick}
-        />)
-      }
-        
-      )}
+        return (
+          <ImageGalleryItem
+            key={id}
+            webformatURL={webformatURL}
+            tags={tags}
+            largeImageURL={largeImageURL}
+            onClick={onClick}
+          />
+        );
+      })}
     </ul>
   );
 };

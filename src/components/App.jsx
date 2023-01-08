@@ -20,17 +20,21 @@ export class App extends Component {
     showModal: false,
     largeImageURL: '',
     tags: '',
+    totalHits: 0,
   };
 
   async componentDidUpdate(_, prevState) {
     const { query, page } = this.state;
-    if (prevState.query !== query) {
+    if (prevState.query !== query || prevState.page !== page) {
       try {
         this.setState({ isLoading: true });
-        const { hits } = await getImages(query, page);
+        const { hits, totalHits } = await getImages(query, page);
         this.setState(prevState => ({
           images: [...prevState.images, ...hits],
-          page: prevState.page + 1,
+          totalHits:
+            page === 1
+              ? totalHits - hits.length
+              : totalHits - [...prevState.images, ...hits].length,
         }));
       } catch (error) {
         toast.error(`Oops! Something went wrong! ${error}`);
@@ -49,7 +53,7 @@ export class App extends Component {
     })
   }
 
-  onModal = ({ largeImageURL, tags }) => {
+  onModal = (largeImageURL, tags ) => {
     this.setState({
       largeImageURL: largeImageURL,
       tags: tags,
@@ -63,14 +67,17 @@ export class App extends Component {
     }));
   };
 
+  handleLoadMore = () => {
+    this.setState(prevState => ({ page: prevState.page + 1 }));
+  };
+
   render() {
-    const { images, isLoading, showModal, largeImageURL, tags } = this.state;
-    // console.log(largeImageURL);
+    const { images, isLoading, showModal, largeImageURL, tags, totalHits } = this.state;
     return (
       <div className={css.app}>
         <SearchBar onSubmit={this.onChangeQuery} /> 
         <ImageGallery images={images} onClick={this.onModal}/>
-        {(images.length > 0 && !isLoading ) && <Button onLoadMore={this.handleLoadMore} />}
+        {(images.length > 0 && !!totalHits) && <Button onClick={this.handleLoadMore}/>}
         {isLoading && <Loader />}
         {showModal && (
           <Modal onClose={this.toggleModal}>

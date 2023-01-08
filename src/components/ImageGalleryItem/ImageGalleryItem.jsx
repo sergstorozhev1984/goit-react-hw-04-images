@@ -7,7 +7,6 @@ export const ImageGalleryItem = ({
   tags,
   onClick,
 }) => {
-  // console.log(largeImageURL);
   return (
     <li className={css.imageGalleryItem}>
       <img
