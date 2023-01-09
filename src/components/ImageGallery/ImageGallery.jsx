@@ -12,7 +12,7 @@ export const ImageGallery = ({ images, onClick }) => {
             webformatURL={webformatURL}
             tags={tags}
             largeImageURL={largeImageURL}
-            onClick={onClick}
+            
           />
         );
       })}
@@ -21,7 +21,6 @@ export const ImageGallery = ({ images, onClick }) => {
 };
 
 ImageGallery.propTypes = {
-  onClick: PropTypes.func.isRequired,
   images: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,

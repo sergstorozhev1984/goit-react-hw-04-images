@@ -8,7 +8,7 @@ export class SearchBar extends Component {
     query: '',
   }
 
-  handleChange = e => {
+  handleInputChange = e => {
     const {value} = e.target;
     this.setState({query: value.toLowerCase()})
   }
@@ -34,7 +34,7 @@ export class SearchBar extends Component {
           </button>
 
           <input
-            onChange={this.handleChange}
+            onChange={this.handleInputChange}
             className={css.searchFormInput}
             type="text"
             value={this.state.query}

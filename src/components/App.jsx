@@ -6,10 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Button } from './Button/Button';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { SearchBar } from './Searchbar/Searchbar';
-import { getImages } from './services/images.service';
+import { getImages } from '../services/images.service';
 import { Loader } from './Loader/Loader';
-import { Modal } from './Modal/Modal';
-
 
 export class App extends Component {
   state = {
@@ -17,10 +15,7 @@ export class App extends Component {
     query: '',
     page: 1,
     isLoading: false,
-    showModal: false,
-    largeImageURL: '',
-    tags: '',
-    totalHits: 0,
+    totalHits: null,
   };
 
   async componentDidUpdate(_, prevState) {
@@ -29,8 +24,13 @@ export class App extends Component {
       try {
         this.setState({ isLoading: true });
         const { hits, totalHits } = await getImages(query, page);
+        if (totalHits === 0) {
+          toast.error('Nothing was found for your request');
+          this.setState({ isLoading: false });
+          return;
+        }
         this.setState(prevState => ({
-          images: [...prevState.images, ...hits],
+          images: page === 1 ? hits : [...prevState.images, ...hits],
           totalHits:
             page === 1
               ? totalHits - hits.length
@@ -45,45 +45,26 @@ export class App extends Component {
     }
   }
 
-  onChangeQuery = query => {
+  handleSubmit = query => {
     this.setState({
       query: query,
       page: 1,
-      images: [],
     })
   }
-
-  onModal = (largeImageURL, tags ) => {
-    this.setState({
-      largeImageURL: largeImageURL,
-      tags: tags,
-    });
-    this.toggleModal();
-  };
-
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
-  };
 
   handleLoadMore = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   render() {
-    const { images, isLoading, showModal, largeImageURL, tags, totalHits } = this.state;
+    const { images, isLoading, totalHits } = this.state;
     return (
       <div className={css.app}>
-        <SearchBar onSubmit={this.onChangeQuery} /> 
-        <ImageGallery images={images} onClick={this.onModal}/>
-        {(images.length > 0 && !!totalHits) && <Button onClick={this.handleLoadMore}/>}
+        <SearchBar onSubmit={this.handleSubmit} /> 
+        <ImageGallery images={images} />
         {isLoading && <Loader />}
-        {showModal && (
-          <Modal onClose={this.toggleModal}>
-            <img src={largeImageURL} alt={tags} className={css.modalImg} />
-          </Modal>
-        )}
+        {(images.length > 0 && !!totalHits) && <Button onClick={this.handleLoadMore}/>}
+        
         <ToastContainer autoClose={3000} />
       </div>
     );
